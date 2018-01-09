@@ -14,8 +14,8 @@ class R10K::Git::ShellGit::WorkingRepository < R10K::Git::ShellGit::BaseReposito
   end
 
   def initialize(basedir, dirname, gitdirname = '.git-test')
-    @path = Pathname.new(File.join(basedir, dirname))
-    @git_dir = Pathname.new(File.join(basedir, dirname, gitdirname))
+    @path = Pathname.new(File.join(basedir, dirname)).cleanpath
+    @git_dir = Pathname.new(File.join(basedir, dirname, gitdirname)).cleanpath
   end
 
   def git(cmd, opts = {})

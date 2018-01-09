@@ -123,7 +123,6 @@ class Puppetfile
 
     # Keep track of all the content this Puppetfile is managing to enable purging.
     @managed_content[@basedir] = Array.new unless @managed_content.has_key?(@basedir)
-    @managed_content[@basedir] << 'Puppetfile'
 
     mod = R10K::Module.new(name, @basedir, args.merge(basemod_args), @environment)
 
@@ -138,6 +137,16 @@ class Puppetfile
     @managed_content.keys
   end
 
+  def basemod_contents
+    @modules.select do |mod|
+      mod.is_basemod
+    end.map do |mod|
+      mod.repo.tracked_paths.map do |path|
+        File.join(@basedir, path)
+      end
+    end.flatten
+  end
+
   # Returns an array of the full paths to all the content being managed.
   # @note This implements a required method for the Purgeable mixin
   # @return [Array<String>]
@@ -150,7 +159,8 @@ class Puppetfile
   end
 
   def purge_exclusions
-    exclusions = managed_directories
+    exclusions = managed_directories + basemod_contents
+    exclusions << @puppetfile_path
 
     if environment && environment.respond_to?(:desired_contents)
       exclusions += environment.desired_contents
