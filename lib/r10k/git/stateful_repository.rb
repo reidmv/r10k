@@ -46,11 +46,11 @@ class R10K::Git::StatefulRepository
     when :absent
       logger.debug(_("Cloning %{repo_path} and checking out %{ref}") % {repo_path: @repo.path, ref: ref })
       @repo.clone(@remote, {:ref => sha})
-    when :mismatched
-      logger.debug(_("Replacing %{repo_path} and checking out %{ref}") % {repo_path: @repo.path, ref: ref })
-      @repo.path.rmtree
-      @repo.clone(@remote, {:ref => sha})
-    when :outdated
+#    when :mismatched
+#      logger.debug(_("Replacing %{repo_path} and checking out %{ref}") % {repo_path: @repo.path, ref: ref })
+#      @repo.path.rmtree
+#      @repo.clone(@remote, {:ref => sha})
+    when :outdated, :mismatched
       logger.debug(_("Updating %{repo_path} to %{ref}") % {repo_path: @repo.path, ref: ref })
       @repo.checkout(sha, {:force => force})
     when :dirty

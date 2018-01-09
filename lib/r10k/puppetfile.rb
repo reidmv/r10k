@@ -116,6 +116,20 @@ class Puppetfile
     @modules << mod
   end
 
+  # @param [String] name
+  # @param [*Object] args
+  def add_base_module(name, args)
+    basemod_args = {:gitdirname => ".git-#{name}", :is_basemod => true}
+
+    # Keep track of all the content this Puppetfile is managing to enable purging.
+    @managed_content[@basedir] = Array.new unless @managed_content.has_key?(@basedir)
+    @managed_content[@basedir] << 'Puppetfile'
+
+    mod = R10K::Module.new(name, @basedir, args.merge(basemod_args), @environment)
+
+    @modules << mod
+  end
+
   include R10K::Util::Purgeable
 
   def managed_directories
@@ -193,6 +207,10 @@ class Puppetfile
 
     def mod(name, args = nil)
       @librarian.add_module(name, args)
+    end
+
+    def basemod(name, args = nil)
+      @librarian.add_base_module(name, args)
     end
 
     def forge(location)
