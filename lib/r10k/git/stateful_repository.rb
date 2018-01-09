@@ -20,10 +20,10 @@ class R10K::Git::StatefulRepository
   # @param remote  [String] The git remote to use for the repo
   # @param basedir [String] The path containing the Git repo
   # @param dirname [String] The directory name of the Git repo
-  def initialize(remote, basedir, dirname)
+  def initialize(remote, basedir, dirname, gitdirname = '.git')
     @remote = remote
     @cache = R10K::Git.cache.generate(@remote)
-    @repo = R10K::Git.thin_repository.new(basedir, dirname, @cache)
+    @repo = R10K::Git.thin_repository.new(basedir, dirname, gitdirname, @cache)
   end
 
   def resolve(ref)
