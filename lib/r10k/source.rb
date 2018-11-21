@@ -34,5 +34,6 @@ module R10K
     require 'r10k/source/base'
     require 'r10k/source/git'
     require 'r10k/source/svn'
+    require 'r10k/source/puppet_environments_repo'
   end
 end
