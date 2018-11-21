@@ -21,6 +21,23 @@ class R10K::Git::ShellGit::BaseRepository
     end
   end
 
+  # Requires git_dir to be implemented
+  # @return [Array] A list of files committed to the git repo
+  def ls_files(ref = 'HEAD')
+    lstree = git ['ls-tree', '--full-tree', '-r', ref, '--name-only', '--full-name'], :git_dir => git_dir.to_s
+    lstree.stdout.split
+  end
+
+  # Requires git_dir to be implemented
+  # @param path [String]
+  # @return [String] The content of the specified file from the git repo
+  def cat_file(path, ref = 'HEAD')
+    lstree  = git ['ls-tree', ref, path], :git_dir => git_dir.to_s
+    blob    = lstree.stdout.split[2]
+    catfile = git ['cat-file', 'blob', blob], :git_dir => git_dir.to_s
+    catfile.stdout
+  end
+
   # For compatibility with R10K::Git::Ref
   # @todo remove alias
   alias rev_parse resolve
