@@ -28,6 +28,30 @@ class R10K::Git::Rugged::BaseRepository
     with_repo { |repo| repo.branches.each_name(:local).to_a }
   end
 
+  def ls_files(ref = 'HEAD')
+    with_repo do |repo|
+      commit = repo.rev_parse(ref)
+
+      unless commit && commit.tree
+        raise R10K::Error.new("Unable to resolve '#{ref}' to a valid commit in repo #{@path}")
+      end
+
+      commit.tree.walk(:postorder).collect do |root, entry|
+        root.empty? ? entry[:name] : File.join(root, entry[:name])
+      end
+    end
+  end
+
+  # @param path [String]
+  # @return [String] The content of the specified file from the git repo
+  def cat_file(path, ref = 'HEAD')
+    with_repo do |repo|
+      rev = repo.rev_parse(ref)
+      blob = repo.blob_at(rev.oid, path)
+      blob.content
+    end
+  end
+
   def tags
     with_repo { |repo| repo.tags.each_name.to_a }
   end
