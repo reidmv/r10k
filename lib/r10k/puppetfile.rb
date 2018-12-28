@@ -64,6 +64,7 @@ class Puppetfile
   end
 
   def load(default_branch_override = nil)
+    return true if self.loaded?
     if File.readable? @puppetfile_path
       self.load!(default_branch_override)
     else
@@ -81,6 +82,10 @@ class Puppetfile
     @loaded = true
   rescue SyntaxError, LoadError, ArgumentError, NameError => e
     raise R10K::Error.wrap(e, _("Failed to evaluate %{path}") % {path: @puppetfile_path})
+  end
+
+  def loaded?
+    @loaded
   end
 
   # @param [Array<String>] modules

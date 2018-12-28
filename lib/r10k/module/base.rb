@@ -31,6 +31,10 @@ class R10K::Module::Base
   #   @return [R10K::Environment, nil] The parent environment of the module
   attr_reader :environment
 
+  # @!attribute [rw] source
+  #   @return [String] Where the module was sourced from
+  attr_accessor :source
+
   # There's been some churn over `author` vs `owner` and `full_name` over
   # `title`, so in the short run it's easier to support both and deprecate one
   # later.
@@ -47,6 +51,7 @@ class R10K::Module::Base
     @owner, @name = parse_title(@title)
     @path = Pathname.new(File.join(@dirname, @name))
     @environment = environment
+    @source = 'Puppetfile' # default source of modules
   end
 
   # @deprecated

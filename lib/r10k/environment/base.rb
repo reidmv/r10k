@@ -96,8 +96,10 @@ class R10K::Environment::Base
     }
   end
 
-  # @return [Array<R10K::Module::Base>] All modules defined in the Puppetfile
-  #   associated with this environment.
+  # @return [Array<R10K::Module::Base>] All modules associated with this environment,
+  #   including any defined in an associated Puppetfile. The only default and assumed
+  #   source of modules is the Puppetfile. Other module sources may also exist,
+  #   depending on what environment source is used.
   def modules
     @puppetfile.load
     @puppetfile.modules
